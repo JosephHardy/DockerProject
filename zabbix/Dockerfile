@@ -21,6 +21,8 @@ RUN apt-get update
 RUN apt-get install zabbix-server-mysql zabbix-frontend-php
 
 RUN service mysql-server start \
-&& mysql -uroot -prootpass -e "CREATE DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin; \
+&& mysql -uroot -prootpass -e "CREATE DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin"; \
 && mysql -uroot -prootpass -e "GRANT ALL PRIVILEGES ON zabbix.* TO zabbix@localhost IDENTIFIED BY 'rootpass'"; \
-&& mysql -uroot -prootpass -e
+&& mysql -uroot -prootpass -e "FLUSH ALL PRIVILEGES ON zabbix.*";
+
+RUN zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uroot -p rootpass
