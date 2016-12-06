@@ -4,6 +4,9 @@ MAINTAINER JosephPaulHardy
 # Update Ubuntu
 RUN apt-get update
 
+# Install apache
+RUN apt-get install -y apache2
+
 # Automate MySQL Installation
 RUN echo "mysql-server mysql-server/root_password password rootpass" | debconf-set-selections
 RUN echo "mysql-server mysql-server/root_password_again password rootpass" | debconf-set-selections
@@ -21,8 +24,11 @@ RUN apt-get update
 RUN apt-get install zabbix-server-mysql zabbix-frontend-php
 
 RUN service mysql-server start \
-&& mysql -uroot -prootpass -e "CREATE DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin"; \
-&& mysql -uroot -prootpass -e "GRANT ALL PRIVILEGES ON zabbix.* TO zabbix@localhost IDENTIFIED BY 'rootpass'"; \
-&& mysql -uroot -prootpass -e "FLUSH ALL PRIVILEGES ON zabbix.*";
+&& echo "CREATE DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin;" | mysql -uroot -prootpass\
+&& echo "GRANT ALL PRIVILEGES ON zabbix.* TO zabbix@localhost IDENTIFIED BY 'rootpass';" | mysql -uroot -prootpass\
+&& echo "FLUSH ALL PRIVILEGES ON zabbix.*;" | mysql -uroot -prootpass
 
 RUN zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uroot -p rootpass
+
+RUN service zabbix-server start
+RUN service apache2 restart
