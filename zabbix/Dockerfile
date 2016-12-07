@@ -45,5 +45,8 @@ RUN sed -i '92 c DBName=zabbixdb' /etc/zabbix/zabbix_server.conf
 RUN sed -i '108 c DBUser=zabbix' /etc/zabbix/zabbix_server.conf
 RUN sed -i '118 i DBPassword=zpass' /etc/zabbix/zabbix_server.conf
 
+RUN sed -i '912 c date.timezone="Europe/London"' /etc/php/7.0/apache2/php.ini
+
 RUN service apache2 restart && service zabbix-server restart
+RUN cat -n /etc/php/7.0/apache2/php.ini
 ENTRYPOINT service apache2 start && service mysql start && service zabbix-server start && bash
