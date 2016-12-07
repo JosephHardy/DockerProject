@@ -35,18 +35,22 @@ RUN service mysql start \
 && echo "GRANT ALL ON zabbixdb.* TO zabbix@localhost IDENTIFIED BY 'zpass';" | mysql -uroot -prootpass\
 && echo "FLUSH PRIVILEGES;" | mysql -uroot -prootpass
 
+# Import schema and data
 WORKDIR /usr/share/doc/zabbix-server-mysql
 RUN service mysql start && zcat create.sql.gz | mysql zabbixdb -u zabbix -pzpass
 
+# Restart apache and zabbix
 RUN service zabbix-server start && service apache2 restart
 
+# Add configuration details
 RUN sed -i '82 i DBHost=localhost' /etc/zabbix/zabbix_server.conf
 RUN sed -i '92 c DBName=zabbixdb' /etc/zabbix/zabbix_server.conf
 RUN sed -i '108 c DBUser=zabbix' /etc/zabbix/zabbix_server.conf
 RUN sed -i '118 i DBPassword=zpass' /etc/zabbix/zabbix_server.conf
 
+# Set PHP timezone
 RUN sed -i '912 c date.timezone="Europe/London"' /etc/php/7.0/apache2/php.ini
 
+# Start zabbix
 RUN service apache2 restart && service zabbix-server restart
-RUN cat -n /etc/php/7.0/apache2/php.ini
 ENTRYPOINT service apache2 start && service mysql start && service zabbix-server start && bash
