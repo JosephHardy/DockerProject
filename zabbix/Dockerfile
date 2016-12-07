@@ -4,6 +4,9 @@ MAINTAINER JosephPaulHardy
 # Update Ubuntu
 RUN apt-get update
 
+# Install wget
+RUN apt-get install -y wget
+
 # Install apache
 RUN apt-get install -y apache2
 
@@ -14,6 +17,9 @@ RUN echo "mysql-server mysql-server/root_password_again password rootpass" | deb
 # Install MySQL
 RUN apt-get install -y mysql-server
 
+# Install PHP
+RUN apt-get install php7.0 php7.0-cli php7.0-common php7.0-mysql libapache2-mod-php7.0 php7.0-cgi php7.0-xmlreader php7.0-xmlwriter php7.0-bcmath php7.0-mbstring -y
+
 # Download Zabbix
 WORKDIR /opt/
 RUN wget http://repo.zabbix.com/zabbix/3.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_3.0-1+xenial_all.deb
@@ -21,14 +27,23 @@ RUN dpkg -i zabbix-release_3.0-1+xenial_all.deb
 RUN apt-get update
 
 # Install Zabbix Frontend
-RUN apt-get install zabbix-server-mysql zabbix-frontend-php
+RUN apt-get install -y zabbix-server-mysql zabbix-frontend-php
 
-RUN service mysql-server start \
-&& echo "CREATE DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin;" | mysql -uroot -prootpass\
-&& echo "GRANT ALL PRIVILEGES ON zabbix.* TO zabbix@localhost IDENTIFIED BY 'rootpass';" | mysql -uroot -prootpass\
-&& echo "FLUSH ALL PRIVILEGES ON zabbix.*;" | mysql -uroot -prootpass
+RUN service mysql start \
+&& echo "CREATE USER zabbix" | mysql -uroot -prootpass\
+&& echo "CREATE DATABASE zabbixdb CHARACTER SET utf8 COLLATE utf8_bin;" | mysql -uroot -prootpass\
+&& echo "GRANT ALL ON zabbixdb.* TO zabbix@localhost IDENTIFIED BY 'zpass';" | mysql -uroot -prootpass\
+&& echo "FLUSH PRIVILEGES;" | mysql -uroot -prootpass
 
-RUN zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uroot -p rootpass
+WORKDIR /usr/share/doc/zabbix-server-mysql
+RUN service mysql start && zcat create.sql.gz | mysql zabbixdb -u zabbix -pzpass
 
-RUN service zabbix-server start
-RUN service apache2 restart
+RUN service zabbix-server start && service apache2 restart
+
+RUN sed -i '82 i DBHost=localhost' /etc/zabbix/zabbix_server.conf
+RUN sed -i '92 c DBName=zabbixdb' /etc/zabbix/zabbix_server.conf
+RUN sed -i '108 c DBUser=zabbix' /etc/zabbix/zabbix_server.conf
+RUN sed -i '118 i DBPassword=zpass' /etc/zabbix/zabbix_server.conf
+
+RUN service apache2 restart && service zabbix-server restart
+ENTRYPOINT service apache2 start && service mysql start && service zabbix-server start && bash
