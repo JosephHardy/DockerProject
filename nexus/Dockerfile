@@ -1,4 +1,4 @@
-FROM java
+FROM base
 MAINTAINER JosephPaulHardy
 
 WORKDIR /opt/
