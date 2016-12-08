@@ -29,6 +29,7 @@ RUN sed -i '44 i <role rolename="admin-gui"/>' /opt/apache-tomcat-8.5.8/conf/tom
 # Allowing access from outside container
 RUN sed -i '113 i <Connector port="9009" protocol="AJP\/1\.3" redirectPort="9443" address="164\.39\.75\.108" useIPVHosts="true" \/>' /opt/apache-tomcat-8.5.8/conf/server.xml
 RUN sed -i '20s/allow="/allow="164\\\.39\\\.75\\\.108|/' /opt/apache-tomcat-8.5.8/webapps/manager/META-INF/context.xml
+RUN sed -i '20s/allow="/allow="164\\\.39\\\.75\\\.108|/' /opt/apache-tomcat-8.5.8/webapps/host-manager/META-INF/context.xml
 
 ENTRYPOINT ./startup.sh && bash
 
