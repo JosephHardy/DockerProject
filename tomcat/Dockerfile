@@ -21,7 +21,7 @@ WORKDIR /opt/apache-tomcat-8.5.8/bin
 # Convert startup into executable
 RUN chmod a+x startup.sh
 
-# Adding users and roles ton tomcat-users.xml
+# Adding users and roles to tomcat-users.xml
 RUN sed -i '44 i <user username="admin" password="password" roles="manager-gui,admin-gui"/>' /opt/apache-tomcat-8.5.8/conf/tomcat-users.xml
 RUN sed -i '44 i <role rolename="manager-gui"/>' /opt/apache-tomcat-8.5.8/conf/tomcat-users.xml
 RUN sed -i '44 i <role rolename="admin-gui"/>' /opt/apache-tomcat-8.5.8/conf/tomcat-users.xml
