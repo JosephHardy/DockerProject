@@ -1,0 +1,55 @@
+version: '2'
+services:
+  base:
+    build: ./base
+    image: base:latest
+
+  jenkins:
+    build: ./jenkins
+    image: jphjenkins:latest
+    container_name: cjenkins
+    depends_on: 
+    - base
+    ports: 
+    - "8080:8080"
+    tty: true
+
+  jira:
+    build: ./jira
+    image: jphjira:latest
+    container_name: cjira
+    depends_on: 
+    - base
+    ports: 
+    - "8081:8081"
+    tty: true
+
+#  nexus:
+#    build: ./nexus
+#    image: jphnexus:latest
+#    container_name: cnexus
+#    depends_on: 
+#    - base
+#    ports: 
+#    - "8085:8081"
+#    tty: true
+
+#  zabbix:
+#    build: ./zabbix
+#    image: jphzabbix:latest
+#    container_name: czabbix
+#    depends_on: 
+#    - base
+#    ports: 
+#    - "80:80"
+#    tty: true
+
+#  tomcat:
+#    build: ./tomcat
+#    image: jphtomcat:latest
+#    container_name: ctomcat
+#    depends_on: 
+#    - base
+#    ports: 
+#    - "8082:8080"
+#    tty: true
