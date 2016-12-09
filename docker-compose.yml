@@ -44,12 +44,12 @@ services:
 #    - "80:80"
 #    tty: true
 
-#  tomcat:
-#    build: ./tomcat
-#    image: jphtomcat:latest
-#    container_name: ctomcat
-#    depends_on: 
-#    - base
-#    ports: 
-#    - "8082:8080"
-#    tty: true
+  tomcat:
+    build: ./tomcat
+    image: jphtomcat:latest
+    container_name: ctomcat
+    depends_on: 
+    - base
+    ports: 
+    - "8082:8080"
+    tty: true
