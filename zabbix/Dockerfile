@@ -10,6 +10,7 @@ RUN apt-get update
 # Install Zabbix Frontend
 RUN apt-get install -y zabbix-server-mysql zabbix-frontend-php
 
+# Create MySQL user and set privileges
 RUN service mysql start \
 && echo "CREATE USER zabbix" | mysql -uroot -prootpass\
 && echo "CREATE DATABASE zabbixdb CHARACTER SET utf8 COLLATE utf8_bin;" | mysql -uroot -prootpass\
