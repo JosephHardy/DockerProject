@@ -1,4 +1,4 @@
-FROM base
+FROM java
 MAINTAINER JosephPaulHardy
 
 # Download Jenkins
