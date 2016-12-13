@@ -24,25 +24,25 @@ services:
     - "8081:8081"
     tty: true
 
-#  nexus:
-#    build: ./nexus
-#    image: jphnexus:latest
-#    container_name: cnexus
-#    depends_on: 
-#    - base
-#    ports: 
-#    - "8085:8081"
-#    tty: true
+  nexus:
+    build: ./nexus
+    image: jphnexus:latest
+    container_name: cnexus
+    depends_on: 
+    - base
+    ports: 
+    - "8085:8081"
+    tty: true
 
-#  zabbix:
-#    build: ./zabbix
-#    image: jphzabbix:latest
-#    container_name: czabbix
-#    depends_on: 
-#    - base
-#    ports: 
-#    - "80:80"
-#    tty: true
+  zabbix:
+    build: ./zabbix
+    image: jphzabbix:latest
+    container_name: czabbix
+    depends_on: 
+    - base
+    ports: 
+    - "80:80"
+    tty: true
 
   tomcat:
     build: ./tomcat
