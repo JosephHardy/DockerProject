@@ -1,6 +1,6 @@
 # DockerProject
 
-## Don't worry guys, I've totally got this!
+## A project to install several programs via Docker and Docker-Compose
 
 Acknowledgements:
 
